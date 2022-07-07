@@ -18,7 +18,7 @@ Lyra was originally named "Li-ra", which stands for "Li(near)-(Algeb)ra" but for
 
 ## How to use it?
 
-Lyra contains 2 major classes as of now and 3 helper methods.
+Lyra contains 3 major classes as of now and 3 helper methods.
 
 ### Classes:
 
