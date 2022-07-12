@@ -45,6 +45,9 @@ class Point:
     def __repr__(self) -> str:
         return self.__str__()
     
+    def __hash__(self) -> int:
+        return hash((self.x, self.y))
+    
     def __add__(self, other: object):
         if not isinstance(other, Point):
             return NotImplemented

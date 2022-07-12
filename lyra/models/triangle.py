@@ -1,11 +1,27 @@
-from models.line import Line, Point
+from models.line import Line
+from models.point import Point
+from models._base_shape import _GeometricalShapeWithVertices
 
-class Triangle:
+class Triangle(_GeometricalShapeWithVertices):
     """Represents a triangle in 2d space.
     
     .. note::
         This class should not be directly instantiated but instead should be created using the provided class methods.
     """
+    
+    # The triangle shall always be considered in the following way:
+    #
+    #
+    #                        A
+    #                       /\
+    #                      /  \
+    #   side AB(side c)   /    \  side AC (side B)
+    #                    /      \
+    #                   /________\
+    #                  B          C
+    # 
+    #                   side BC (side A)
+     
     def __init__(self, side1: Line, side2: Line, side3: Line) -> None:
         self._A = side1
         self._B = side2
@@ -137,7 +153,7 @@ class Triangle:
         condition2 = all([a_len + b_len > c_len, a_len + c_len > b_len, b_len + c_len > a_len])
         
         points = [side_a.point_A, side_a.point_B, side_b.point_A, side_b.point_B, side_c.point_A, side_c.point_B]
-        condition3 = len(set(points)) == 3
+        condition3 = len(set(points)) == 3 # enforcing that all 3 three lines have atleast 1 point in common (i.e. they are not collinear)
         
         return all([condition1, condition2, condition3])
     
@@ -162,12 +178,12 @@ class Triangle:
         Raises
         ------
         ValueError
-            If the total angle between the sides is not 180 degrees which means they are not a triangle.
+            If given sides do not form a triangle.
         """
         if not cls._verify_sides(side_a, side_b, side_c):
             raise ValueError("Sides do not form a triangle.")
         
-        self = super().__new__(cls)
+        self = super(_GeometricalShapeWithVertices, cls).__new__(cls)
         
         self.__init__(side_a, side_b, side_c)
         
@@ -196,4 +212,7 @@ class Triangle:
         ValueError
             If the points do not form a proper triangle.
         """
-        return cls.from_sides(Line.from_AB_coordinates(B, C), Line.from_AB_coordinates(A, C), Line.from_AB_coordinates(A, B))
+        side_a = Line.from_AB_coordinates(B, C)
+        side_b = Line.from_AB_coordinates(A, C)
+        side_c = Line.from_AB_coordinates(A, B)
+        return cls.from_sides(side_a, side_b, side_c)

@@ -1,7 +1,7 @@
 from models.infinity import INFINITY
 from models.point import Point
 import math
-from typing import Literal, Optional, Tuple, Union, Generator
+from typing import Literal, Optional, Tuple, Union
 from fractions import Fraction
 import logging
 
@@ -207,7 +207,14 @@ class Line:
         :class:`.Line`
             The newly created line object
         """
-        slope = (point_B.y - point_A.y) / (point_B.x - point_A.x)
+        if point_A == point_B:
+            raise ValueError("Expected different coordinates from point A and B, but got the same coordinates {}".format(point_A))
+        
+        try:
+            slope = (point_B.y - point_A.y) / (point_B.x - point_A.x)
+        
+        except ZeroDivisionError:
+            slope = INFINITY
         
         self = cls.from_slope_and_point(slope, point_A)
         self._rng = False
