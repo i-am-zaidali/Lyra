@@ -54,6 +54,9 @@ class Line:
         self._y = y_coefficient
         self._c = constant
         
+    def __new__(cls, *args, **kwargs):
+        raise RuntimeError(f"This class should not be instantiated manually. Use the provided class methods to create a new {cls.__name__} object.")
+        
     def __str__(self) -> str:
         x, y, c = self.x_coefficient, self.y_coefficient, self.constant
         x = f"{x:+}x " if x > 1 or y < -1 else 'x ' if y == 1 else "-x " if x != 0 else ""
@@ -275,7 +278,8 @@ class Line:
         if all(v == 0 for v in [x_coefficient, y_coefficient, constant]):
             raise ValueError("Cannot create line with all values equal to 0.")
         
-        self = cls(x_coefficient, y_coefficient, constant)
+        self = super().__new__(cls)
+        self.__init__(x_coefficient, y_coefficient, constant)
         
         if not point_A or not point_B:
             self._rng = True

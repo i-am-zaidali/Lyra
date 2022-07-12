@@ -11,6 +11,9 @@ class Triangle:
         self._B = side2
         self._C = side3
         
+    def __new__(cls, *args, **kwargs):
+        raise RuntimeError(f"This class should not be instantiated manually. Use the provided class methods to create a new {cls.__name__} object.")
+        
     def __str__(self) -> str:
         return f"{self.side_A}\n{self.side_B}\n{self.side_C}"
         
@@ -126,15 +129,20 @@ class Triangle:
         angle1 = side_a.angle_with_line(side_b)
         angle2 = side_a.angle_with_line(side_c)
         angle3 = side_b.angle_with_line(side_c)
+        condition1 = sum([angle1, angle2, angle3]) == 180
         
         a_len = side_a.length
         b_len = side_b.length
         c_len = side_c.length
+        condition2 = all([a_len + b_len > c_len, a_len + c_len > b_len, b_len + c_len > a_len])
         
-        return (sum([angle1, angle2, angle3]) == 180 and a_len + b_len > c_len and a_len + c_len > b_len and b_len + c_len > a_len)
+        points = [side_a.point_A, side_a.point_B, side_b.point_A, side_b.point_B, side_c.point_A, side_c.point_B]
+        condition3 = len(set(points)) == 3
+        
+        return all([condition1, condition2, condition3])
     
     @classmethod
-    def from_sides(cls, side_a: Line, side_b: Line, side_c: Line):
+    def from_sides(cls, side_a: Line, side_b: Line, side_c: Line) -> "Triangle":
         """Creates a triangle from the three sides.
 
         Parameters
@@ -159,10 +167,14 @@ class Triangle:
         if not cls._verify_sides(side_a, side_b, side_c):
             raise ValueError("Sides do not form a triangle.")
         
-        return cls(side_a, side_b, side_c)
+        self = super().__new__(cls)
+        
+        self.__init__(side_a, side_b, side_c)
+        
+        return self
     
     @classmethod
-    def from_vertices(cls, A: Point, B: Point, C: Point):# -> 'Triangle':
+    def from_vertices(cls, A: Point, B: Point, C: Point) -> 'Triangle':
         """Creates a triangle from the three vertices.
 
         Parameters
