@@ -59,8 +59,8 @@ class Line:
         
     def __str__(self) -> str:
         x, y, c = self.x_coefficient, self.y_coefficient, self.constant
-        x = f"{x:+}x " if x > 1 or y < -1 else 'x ' if y == 1 else "-x " if x != 0 else ""
-        y = f"{y:=+{len(str(y)) + (1 if y < 0 else 2)}}y " if y > 1 or y < -1 else '+ y ' if y == 1 else "- y " if y != 0 else ""
+        x = f"{x:+}x " if x > 1 or x < -1 else 'x ' if x == 1 else "-x " if x == -1 else ""
+        y = f"{y:=+{len(str(y)) + (1 if y < 0 else 2)}}y " if y > 1 or y < -1 else '+ y ' if y == 1 else "- y " if y == -1 else ""
         c = f"{c:=+{len(str(c)) + (1 if c < 0 else 2)}} " if c != 0 else ""
         return f"{x}{y}{c}= 0"
     
