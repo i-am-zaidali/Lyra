@@ -124,14 +124,16 @@ class Line:
         
         Returns a special `.INFINITY` object (subclass of float) if the line is vertical (AKA `Line.y_coefficient` is 0).
         """
-        if self._rng:
-            try:
+        try:
+            if self._rng:
                 slope = -self.x_coefficient / self.y_coefficient
-            except ZeroDivisionError: # incase the line is vertical, when slope is infinity
-                slope = INFINITY
+                
+            else:
+                slope = (self.point_B.y - self.point_A.y) / (self.point_B.x - self.point_A.x)
+        
+        except ZeroDivisionError: # incase the line is vertical, when slope is infinity
+            slope = INFINITY
             
-        else:
-            slope = (self.point_B.y - self.point_A.y) / (self.point_B.x - self.point_A.x)
         
         return slope
     
@@ -455,7 +457,11 @@ class Line:
         :class:`bool`
             A boolean value indicating whether the lines are parallel or not
         """
-        return self.slope == (-1/line.slope)
+        try:
+            return self.slope == (-1/line.slope)
+    
+        except ZeroDivisionError:
+            return (self.slope == 0 and line.slope is INFINITY) or (self.slope is INFINITY and line.slope == 0)
     
     def intersects_with_line_on_point(self, line: "Line"):
         """Get the point at which the line intersects with another line
